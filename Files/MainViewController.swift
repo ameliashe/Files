@@ -1,5 +1,5 @@
 //
-//  MainViewController.swift
+//  MainViewControllervi.swift
 //  Files
 //
 //  Created by Amelia Romanova on 2/25/25.
@@ -40,6 +40,10 @@ class MainViewController: UIViewController {
 
 		addSubviews()
 		setupConstraints()
+	}
+
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
 		loadContents()
 	}
 
@@ -62,8 +66,12 @@ class MainViewController: UIViewController {
 	}
 
 	func loadContents() {
-		contents = fileManagerService.contentsOfDirectory(at: currentPath)
-		docsTable.reloadData()
+		if Settings.shared.sortingABC == true {
+			contents = fileManagerService.contentsOfDirectory(at: currentPath).sorted { $0.name < $1.name }
+		} else {
+			contents = fileManagerService.contentsOfDirectory(at: currentPath).sorted { $0.name > $1.name }
+		}
+		reloadTable()
 	}
 
 	func navigationBarSetup() {
@@ -98,6 +106,10 @@ class MainViewController: UIViewController {
 		imagePicker.sourceType = .photoLibrary
 		imagePicker.delegate = self
 		present(imagePicker, animated: true)
+	}
+
+	func reloadTable() {
+		docsTable.reloadData()
 	}
 
 }
